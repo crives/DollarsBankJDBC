@@ -11,7 +11,7 @@ import java.util.List;
 import com.dollarsbank.model.Account;
 import com.dollarsbank.connection.ConnectionManager;
 
-public abstract class AccountDAOImp implements AccountDAO {
+public class AccountDAOImp implements AccountDAO {
 	
 	private Connection conn = ConnectionManager.getConnection();
 
@@ -46,7 +46,12 @@ public abstract class AccountDAOImp implements AccountDAO {
 			ResultSet rs = pstmt.executeQuery();
 			
 			if(rs.next() ) {
+				String name = rs.getString(1);
+				String user_id = rs.getString(2);
+				String password = rs.getString(3);
+				Long initialDep = rs.getLong(4);
 				
+				account = new Account(name, user_id, password, initialDep);
 			}
 			
 		} catch (SQLException e) {
@@ -86,13 +91,13 @@ public abstract class AccountDAOImp implements AccountDAO {
 	}
 	
 	@Override
-	public Account addAccount(Account account) {
+	public boolean addAccount(Account account) {
 		
-		if(getAccount(account.getName(), account.getUserId(), account.getPassword(), account.getInitialDeposit()) != null) {
-			updateAccount(getAccount(account.getName(), account.getUserId(), account.getPassword(), account.getInitialDeposit()));
-			return getAccount(account.getName(), account.getUserId(), account.getPassword(), account.getInitialDeposit());
+//		if(getAccount(account.getName(), account.getUserId(), account.getPassword(), account.getInitialDeposit()) != null) {
+//			updateAccount(getAccount(account.getName(), account.getUserId(), account.getPassword(), account.getInitialDeposit()));
+//			return getAccount(account.getName(), account.getUserId(), account.getPassword(), account.getInitialDeposit());
 		
-		} else {
+//		} else {
 			try {
 				PreparedStatement pstmt = conn.prepareStatement("insert into account values(?, ?, ?, ?)");
 				
@@ -104,8 +109,9 @@ public abstract class AccountDAOImp implements AccountDAO {
 				int insert = pstmt.executeUpdate();
 				
 				if(insert > 0) {
-					account = getAccount(account.getName(), account.getUserId(), account.getPassword(), account.getInitialDeposit());
-					return account;
+//					account = getAccount(account.getName(), account.getUserId(), account.getPassword(), account.getInitialDeposit());
+//					return account;
+					return true;
 				}
 				
 				pstmt.close();
@@ -115,9 +121,9 @@ public abstract class AccountDAOImp implements AccountDAO {
 				e.printStackTrace();
 			}
 			
-		}
-		
-		return null;
+//		}
+		return false;
+//		return null;
 	}
 	
 	

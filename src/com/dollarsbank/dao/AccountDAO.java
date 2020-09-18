@@ -11,7 +11,7 @@ public interface AccountDAO {
 		
 	public Account getAccount(String name, String userId, String password, Long initialDeposit);
 	
-	public Account addAccount(Account account);
+	public boolean addAccount(Account account);
 	
 	public boolean updateAccount(Account account);
 
