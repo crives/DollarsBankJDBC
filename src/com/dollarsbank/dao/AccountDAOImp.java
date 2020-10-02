@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,29 +13,11 @@ import com.dollarsbank.connection.ConnectionManager;
 public class AccountDAOImp implements AccountDAO {
 	
 	private Connection conn = ConnectionManager.getConnection();
-
-	
-	public List<Account> getAllAccounts() {
-		List<Account> accountList = new ArrayList<Account>();
-		
-		try(Statement stmt = conn.createStatement()) {
-			ResultSet rs = stmt.executeQuery("select * from account");
-			
-			while(rs.next()) {
-				
-//				accountList.add(new Account(rs.getInt(1)))
-			}
-		} catch (SQLException e) {
-			
-			e.printStackTrace();
-		}
-		return accountList;
-	}
 	
 	@Override
-	public Account getAccountByUserId(String userId) {
+	public List<Account> getAccountByUserId(String userId) {
 		
-		Account account = null;
+		List<Account> account = new ArrayList<Account>();
 		
 		// select * from account where user_id = ?
 		try(PreparedStatement pstmt = conn.prepareStatement("select * from account where user_id = ?")) {
@@ -46,12 +27,11 @@ public class AccountDAOImp implements AccountDAO {
 			ResultSet rs = pstmt.executeQuery();
 			
 			if(rs.next() ) {
-				String name = rs.getString(1);
-				String user_id = rs.getString(2);
-				String password = rs.getString(3);
-				Long initialDep = rs.getLong(4);
+				String user_id = rs.getString(1);
+				String acct_id = rs.getString(2);
+				int balance = rs.getInt(3);
 				
-				account = new Account(name, user_id, password, initialDep);
+				account.add(new Account(user_id, acct_id, balance));
 			}
 			
 		} catch (SQLException e) {
@@ -62,32 +42,30 @@ public class AccountDAOImp implements AccountDAO {
 	}
 	
 	@Override
-	public Account getAccount(String name, String userId, String password, Long initialDeposit) {
+	public Account getAccountById(String accountId) {
 		
 		Account account = null;
 		
-		try(PreparedStatement pstmt = conn.prepareStatement("select * from account where user_id = ? and password = ?")) {
+		// select * from account where user_id = ?
+		try(PreparedStatement pstmt = conn.prepareStatement("select * from account where account_id = ?")) {
 			
-			pstmt.setString(1,  name);
-			pstmt.setString(2,  userId);
-			pstmt.setString(3,  password);
-			pstmt.setLong(4, initialDeposit);
+			pstmt.setString(1, accountId);
 			
 			ResultSet rs = pstmt.executeQuery();
 			
-			if(rs.next()) {
+			if(rs.next() ) {
+				String user_id = rs.getString(1);
+				String acct_id = rs.getString(2);
+				int balance = rs.getInt(3);
 				
-				account = new Account(rs.getString(1), rs.getString(2), rs.getString(3), rs.getLong(4));
-						
+				account = new Account(user_id, acct_id, balance);
 			}
 			
-			pstmt.close();
+		} catch (SQLException e) {
 			
-		} catch(SQLException e) {
 			e.printStackTrace();
 		}
-		
-		return account;
+			return account;
 	}
 	
 	@Override
@@ -99,13 +77,11 @@ public class AccountDAOImp implements AccountDAO {
 		
 //		} else {
 			try {
-				PreparedStatement pstmt = conn.prepareStatement("insert into account values(?, ?, ?, ?)");
+				PreparedStatement pstmt = conn.prepareStatement("insert into account values(?, ?, ?)");
 				
-				pstmt.setString(1, account.getName());
-				pstmt.setString(2, account.getUserId());
-				pstmt.setString(3, account.getPassword());
-				pstmt.setLong(4, account.getInitialDeposit());
-				
+				pstmt.setString(1, account.getUserId());
+				pstmt.setString(2, account.getAccountNumber());
+				pstmt.setInt(3, account.getBalance());
 				int insert = pstmt.executeUpdate();
 				
 				if(insert > 0) {
@@ -123,19 +99,16 @@ public class AccountDAOImp implements AccountDAO {
 			
 //		}
 		return false;
-//		return null;
 	}
-	
 	
 	@Override
 	public boolean updateAccount(Account account) {
 		
-		try(PreparedStatement pstmt = conn.prepareStatement("update account set name = ?, user_id = ?, password = ?, initial_deposit =?")) {
+		try(PreparedStatement pstmt = conn.prepareStatement("update account set user_id = ?, accountNumber = ?, balance =?")) {
 			
-			pstmt.setString(1, account.getName());
-			pstmt.setString(2, account.getUserId());
-			pstmt.setString(3, account.getPassword());
-			pstmt.setLong(4, account.getInitialDeposit());
+			pstmt.setString(1, account.getUserId());
+			pstmt.setString(2, account.getAccountNumber());
+			pstmt.setLong(3, account.getBalance());
 			
 			int updated = pstmt.executeUpdate();
 			
@@ -151,4 +124,5 @@ public class AccountDAOImp implements AccountDAO {
 		
 		return false;
 	}
+
 }

@@ -4,9 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.dollarsbank.model.Customer;
 import com.dollarsbank.connection.ConnectionManager;
@@ -14,28 +11,7 @@ import com.dollarsbank.connection.ConnectionManager;
 public class CustomerDAOImp implements CustomerDAO {
 	
 	private Connection conn = ConnectionManager.getConnection();
-//	private AccountDAOImp accDAO = new AccountDAOImp();
-	
-	@Override
-	public List<Customer> getAllCustomers() {
-		
-		List<Customer> customerList = new ArrayList<Customer>();
-		
-		try(Statement stmt = conn.createStatement()) {
-			ResultSet rs = stmt.executeQuery("select * from customer");
-			
-			while(rs.next()) {
-				
-//				customerList.add(new Customer(rs.get))
-			}
-		} catch (SQLException e) {
-			
-			e.printStackTrace();
-		}
-		
-		return customerList;
-	}
-	
+
 	@Override
 	public Customer getCustomerById(String userId) {
 		
@@ -48,11 +24,12 @@ public class CustomerDAOImp implements CustomerDAO {
 			ResultSet rs = pstmt.executeQuery();
 			
 			if(rs.next()) {
-				String name = rs.getString(1);
-				String address = rs.getString(2);
-				String contact_number = rs.getString(4);
-				String user_Id = rs.getString(3);
-				String password = rs.getString(4);
+				
+				String user_Id = rs.getString(1);
+				String password = rs.getString(2);
+				String name = rs.getString(3);
+				String address = rs.getString(4);
+				String contact_number = rs.getString(5);
 
 				customer = new Customer(name, address, contact_number, user_Id, password);
 			}
@@ -66,36 +43,6 @@ public class CustomerDAOImp implements CustomerDAO {
 		
 		return customer;
 	}
-
-	
-//	@Override
-//	public Customer getCustomer(String name, String address, String contactNumber) {
-//		
-//		Customer customer = null;
-//		
-//		try(PreparedStatement pstmt = conn.prepareStatement("select * from customer where name = ?, address = ? and contact_number = ?")) {
-//			
-//			pstmt.setString(1, name);
-//			pstmt.setString(2, address);
-//			pstmt.setString(3, contactNumber);
-//			
-//			ResultSet rs = pstmt.executeQuery();
-//			
-//			if(rs.next()) {
-//				
-//				customer = new Customer(rs.getString(1), rs.getString(2), rs.getString(3));
-//			
-//			}
-//			
-//			pstmt.close();
-//			
-//		} catch(SQLException e) {
-//			
-//			e.printStackTrace();
-//		}
-//		
-//		return customer;
-//	}
 	
 	
 	@Override
@@ -106,11 +53,13 @@ public class CustomerDAOImp implements CustomerDAO {
 //			return getCustomer(customer.getName(), customer.getAddress(), customer.getContactNumber());
 //		} else {
 			try {
-				PreparedStatement pstmt = conn.prepareStatement("insert into customer values(?, ?, ?)");
+				PreparedStatement pstmt = conn.prepareStatement("insert into customer values(?, ?, ?, ?, ?)");
 				
-				pstmt.setString(1, customer.getName());
-				pstmt.setString(2, customer.getAddress());
-				pstmt.setString(3, customer.getContactNumber());
+				pstmt.setString(1, customer.getUserId());
+				pstmt.setString(2, customer.getPassword());
+				pstmt.setString(3, customer.getName());
+				pstmt.setString(4, customer.getAddress());
+				pstmt.setString(5, customer.getContactNumber());
 				
 				int insert = pstmt.executeUpdate();
 				
@@ -133,27 +82,27 @@ public class CustomerDAOImp implements CustomerDAO {
 		
 	}
 	
-	@Override
-	public boolean updateCustomer(Customer customer) {
-
-		try(PreparedStatement pstmt = conn.prepareStatement("update customer set name = ?, address = ?, contact_number = ? where user_id = ?")) {
-
-			pstmt.setString(1, customer.getName());
-			pstmt.setString(2, customer.getAddress());
-			pstmt.setString(3, customer.getContactNumber());
-
-			int updated = pstmt.executeUpdate();
-
-			if(updated > 0) {
-				return true;
-			}
-			pstmt.close();
-			
-		} catch(SQLException e) {
-			
-			e.printStackTrace();
-		}
-		
-		return false;
-	}
+//	@Override
+//	public boolean updateCustomer(Customer customer) {
+//
+//		try(PreparedStatement pstmt = conn.prepareStatement("update customer set name = ?, address = ?, contact_number = ? where user_id = ?")) {
+//
+//			pstmt.setString(1, customer.getName());
+//			pstmt.setString(2, customer.getAddress());
+//			pstmt.setString(3, customer.getContactNumber());
+//
+//			int updated = pstmt.executeUpdate();
+//
+//			if(updated > 0) {
+//				return true;
+//			}
+//			pstmt.close();
+//			
+//		} catch(SQLException e) {
+//			
+//			e.printStackTrace();
+//		}
+//		
+//		return false;
+//	}
 }
