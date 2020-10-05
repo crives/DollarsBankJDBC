@@ -28,10 +28,10 @@ public class AccountDAOImp implements AccountDAO {
 			
 			if(rs.next() ) {
 				String user_id = rs.getString(1);
-				String acct_id = rs.getString(2);
+				String account_id = rs.getString(2);
 				int balance = rs.getInt(3);
 				
-				account.add(new Account(user_id, acct_id, balance));
+				account.add(new Account(user_id, account_id, balance));
 			}
 			
 		} catch (SQLException e) {
@@ -104,11 +104,11 @@ public class AccountDAOImp implements AccountDAO {
 	@Override
 	public boolean updateAccount(Account account) {
 		
-		try(PreparedStatement pstmt = conn.prepareStatement("update account set user_id = ?, accountNumber = ?, balance =?")) {
+		try(PreparedStatement pstmt = conn.prepareStatement("update account set balance = ? where account_id = ? and user_id = ?;")) {
 			
-			pstmt.setString(1, account.getUserId());
+			pstmt.setLong(1, account.getBalance());
 			pstmt.setString(2, account.getAccountNumber());
-			pstmt.setLong(3, account.getBalance());
+			pstmt.setString(3,  account.getUserId());
 			
 			int updated = pstmt.executeUpdate();
 			

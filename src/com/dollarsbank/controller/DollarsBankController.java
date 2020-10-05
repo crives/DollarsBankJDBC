@@ -99,7 +99,7 @@ public class DollarsBankController {
 		name = sc.nextLine().trim();
 		
 		System.out.println("\nCreate a UserId: ");
-		userId = sc.nextLine().trim();
+		userId = sc.nextLine();
 		
 		System.out.println("\nCreate a password (8 characters with lower, upper, and special): ");
 		password = sc.nextLine().trim();
@@ -163,7 +163,7 @@ public class DollarsBankController {
 				System.out.println("Enter Choice 1 - 5");
 
 				try {
-					choice = sc.nextInt();
+					choice = Integer.parseInt(sc.nextLine().trim());
 					if(choice < 1 || choice > 5) {
 						throw new IllegalArgumentException();
 					}
@@ -217,21 +217,31 @@ public class DollarsBankController {
 			}
 			
 			while(accountdao.getAccountById(acct_num) == null);	
-		
-		List<Transaction> transactions = transactiondao.getTransactionsByIds(currentCustomer.getUserId(), acct_num);
 				
-		for(Transaction t: transactions) {
-			
-			System.out.println(t);
-
-		}
+				
 		
+		
+		if (transactiondao.getTransactionsByIds(currentCustomer.getUserId(), acct_num) != null) {
+
+			List<Transaction> transactions = transactiondao.getTransactionsByIds(currentCustomer.getUserId(), acct_num);
+				
+			for(Transaction t: transactions) {
+			
+				System.out.println(t);
+			
+	
+			} 
+		
+		} else {
+			System.out.println("There are no transactions to show!");
+		
+		}
 	}
 
 	static void customerWithdrawal() {
 		
 		System.out.println("How much would you like to withdraw?");
-		int amount = Integer.parseInt(sc.nextLine());
+		int amount = Integer.parseInt(sc.nextLine().trim());
 		
 		String acct_num;
 	
@@ -269,7 +279,7 @@ public class DollarsBankController {
 	static void customerDeposit() {
 		
 		System.out.println("How much would you like to deposit?");
-		int amount = Integer.parseInt(sc.nextLine());
+		int amount = Integer.parseInt(sc.nextLine().trim());
 		
 		String acct_num;
 	

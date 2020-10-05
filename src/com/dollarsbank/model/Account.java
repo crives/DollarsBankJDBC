@@ -3,15 +3,15 @@ package com.dollarsbank.model;
 public class Account {
 
 	public String userId;
-	public String accountNumber;
+	public String acct_id;
 	public int balance;
 
 	public Account() {}
 	
-	public Account(String accountNumber, String userId, int balance) {
+	public Account(String acct_id, String userId, int balance) {
 		super();
 		this.userId = userId;
-		this.accountNumber = accountNumber;
+		this.acct_id = acct_id;
 		this.balance = balance;
 	}
 	
@@ -24,11 +24,11 @@ public class Account {
 	}
 
 	public String getAccountNumber() {
-		return accountNumber;
+		return acct_id;
 	}
 
 	public void setAccountNumber(String accountNumber) {
-		this.accountNumber = accountNumber;
+		this.acct_id = accountNumber;
 	}
 
 	public int getBalance() {
@@ -41,7 +41,7 @@ public class Account {
 
 	@Override
 	public String toString() {
-		return "Account [userId=" + userId + ", accountNumber=" + accountNumber + ", balance=" + balance + "]";
+		return "Account [userId=" + userId + ", accountNumber=" + acct_id + ", balance=" + balance + "]";
 	}
 
 //	public void deposit(int initialDeposit) {

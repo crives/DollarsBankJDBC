@@ -47,11 +47,11 @@ public class TransactionDAOImp implements TransactionDAO {
 	public boolean addTransaction(Transaction transaction) {
 		
 		try {
-			PreparedStatement pstmt = conn.prepareStatement("insert into account values(?, ?, ?, ?, ?)");
+			PreparedStatement pstmt = conn.prepareStatement("insert into transaction values(?, ?, ?, ?, ?)");
 			
 			pstmt.setInt(1, transaction.getTransId());
-			pstmt.setString(2, transaction.getType());
-			pstmt.setInt(3, transaction.getTransAmount());
+			pstmt.setInt(2, transaction.getTransAmount());
+			pstmt.setString(3, transaction.getType());
 			pstmt.setString(4, transaction.getUserId());
 			pstmt.setString(5,  transaction.getAccountId());
 			
